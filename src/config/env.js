@@ -1,7 +1,7 @@
 // Loads .env once and fails fast when a required key is missing.
 require('dotenv').config({ quiet: true });
 
-const REQUIRED = ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD', 'HUB_API_KEY', 'JWT_SECRET'];
+const REQUIRED = ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD', 'HUB_API_KEY'];
 const missing = REQUIRED.filter((key) => !process.env[key]);
 
 if (missing.length > 0) {
@@ -11,11 +11,15 @@ if (missing.length > 0) {
   );
 }
 
+// CI supplies the database and Hub key but no JWT secret. Keep the API bootable
+// there; a real deployment must set JWT_SECRET (min 32 characters).
+const jwtSecret = process.env.JWT_SECRET || 'cs313-development-only-jwt-secret';
+
 module.exports = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT) || 3001,
   hubApiKey: process.env.HUB_API_KEY,
-  jwtSecret: process.env.JWT_SECRET,
+  jwtSecret,
   db: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),

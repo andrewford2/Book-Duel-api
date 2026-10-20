@@ -3,7 +3,7 @@
 Backend API for **Book Duel**, a literary tournament game for the SorSU Bulan Campus library.
 CS 313 Software Engineering 1, A.Y. 2026-2027.
 
-- Developer: Mark Andrew C. Catamora (andrewford2), BSCS 3-1
+- Developer: Marabel Ginga Germedia (andrewford2), BSCS 3-1
 - Group and game concept: Team C3 (3-1)
 
 This is my own build of my group's game concept. Every commit in this repository was made by me, with Git, on my own computer or in my own Codespace.

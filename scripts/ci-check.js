@@ -63,7 +63,7 @@ function checkRepository() {
   else pass('B', 'node_modules is not in the repository');
 
   const example = fs.existsSync(path.join(ROOT, '.env.example')) ? fs.readFileSync(path.join(ROOT, '.env.example'), 'utf8') : '';
-  const keys = ['NODE_ENV', 'PORT', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD', 'HUB_API_KEY', 'JWT_SECRET'];
+  const keys = ['NODE_ENV', 'PORT', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD', 'HUB_API_KEY'];
   const missingKeys = keys.filter((k) => !new RegExp(`^${k}=`, 'm').test(example));
   if (missingKeys.length) fail('B', '.env.example lists every key', `missing: ${missingKeys.join(', ')}`);
   else pass('B', '.env.example lists every key');
@@ -136,10 +136,10 @@ async function checkDatabase() {
     else fail('C', 'At least four tables exist', `found ${tables.length}: write one migration for each table in your ERD`);
 
     const userCols = (await q(`SELECT column_name AS c FROM information_schema.columns
-      WHERE table_schema = 'public' AND table_name = 'hosts'`)).map((r) => r.c);
-    const needed = ['host_id', 'username', 'password_hash', 'created_at'];
+      WHERE table_schema = 'public' AND table_name = 'users'`)).map((r) => r.c);
+    const needed = ['user_id', 'school_id', 'full_name', 'email', 'role'];
     const missingCols = needed.filter((c) => !userCols.includes(c));
-    if (!userCols.length) fail('C', 'A users table, as in Design Change Notice 01', 'there is no table named hosts');
+    if (!userCols.length) fail('C', 'A users table, as in Design Change Notice 01', 'there is no table named users');
     else if (missingCols.length) fail('C', 'A users table, as in Design Change Notice 01', `missing columns: ${missingCols.join(', ')}`);
     else pass('C', 'A users table, as in Design Change Notice 01');
 
@@ -149,7 +149,7 @@ async function checkDatabase() {
       FROM pg_constraint c JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY (c.conkey)
       WHERE c.contype = 'u' AND c.connamespace = 'public'::regnamespace
       GROUP BY c.conname, c.conrelid HAVING count(*) = 2`);
-    const seat = seatRules.find((r) => r.cols.includes('host_id') || r.cols.includes('user_id') || r.cols.includes('session_id'));
+    const seat = seatRules.find((r) => r.cols.includes('user_id'));
     if (seat) pass('C', 'One seat per account per game (UNIQUE with user_id)', `${seat.name} on ${seat.tbl}`);
     else fail('C', 'One seat per account per game (UNIQUE with user_id)', 'add a UNIQUE constraint on your seat table: the game column and user_id');
 
@@ -212,7 +212,7 @@ async function checkApi() {
     else if (/CHANGE_ME/.test(g[k])) problems.push(`${k} still says CHANGE_ME`);
   });
   if (typeof g.slug === 'string' && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(g.slug)) problems.push('slug must be lower case with hyphens');
-  if (!Number.isInteger(g.min_players) || !Number.isInteger(g.max_players) || g.min_players > g.max_players) problems.push('min_players and max_players must be whole numbers, min \u2264 max');
+  if (!Number.isInteger(g.min_players) || !Number.isInteger(g.max_players) || g.min_players > g.max_players) problems.push('min_players and max_players must be whole numbers, min ≤ max');
   const owner = process.env.GITHUB_REPOSITORY_OWNER;
   if (owner && typeof g.developer === 'string' && g.developer.toLowerCase() !== owner.toLowerCase()) problems.push(`developer is "${g.developer}" but this repository belongs to "${owner}"`);
   if (info.status === 200 && !problems.length) pass('E', 'GET /game-info describes your build', `${g.slug} by ${g.developer}`);
@@ -267,7 +267,7 @@ async function checkApi() {
 
 /* ------------------------------------------------------------------ report */
 const NAMES = { A: 'Set-up', B: 'Secrets', C: 'Migrations', D: 'Seed data', E: 'Hub endpoints', F: 'Results', G: 'Git history' };
-const MARK = { pass: '\u2714', fail: '\u2718', warn: '\u26a0', skip: '\u2013' };
+const MARK = { pass: '✔', fail: '✘', warn: '⚠', skip: '–' };
 
 function report() {
   const order = Object.keys(NAMES);
@@ -278,11 +278,11 @@ function report() {
   }
   const failed = results.filter((r) => r.status === 'fail').length;
   const passed = results.filter((r) => r.status === 'pass').length;
-  console.log(`\n${passed} passed, ${failed} failed.${failed ? ' Fix the \u2718 lines, commit, and push again.' : ' Everything passed.'}\n`);
+  console.log(`\n${passed} passed, ${failed} failed.${failed ? ' Fix the ✘ lines, commit, and push again.' : ' Everything passed.'}\n`);
 
   if (process.env.GITHUB_STEP_SUMMARY) {
     const md = ['## CS 313 automatic check', '',
-      failed ? `**${failed} failed**, ${passed} passed. Fix the \u2718 lines, commit, and push again.` : `**Everything passed** (${passed} checks).`, '',
+      failed ? `**${failed} failed**, ${passed} passed. Fix the ✘ lines, commit, and push again.` : `**Everything passed** (${passed} checks).`, '',
       '| | Criterion | Check | Detail |', '|---|---|---|---|',
       ...results.map((r) => `| ${MARK[r.status]} | ${r.criterion} ${NAMES[r.criterion]} | ${r.label} | ${String(r.detail).replace(/\|/g, '/')} |`), ''];
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, md.join('\n'));

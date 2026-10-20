@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Book Duel - a literary tournament game for the SorSU Bulan Campus library (CS 313 Software Engineering 1)",
   "private": true,
-  "author": "Allyza G. magas <magasallyza@gmail.com>",
+  "author": "Marabel Ginga Germedia <marabelgermedia6@gmail.com>",
   "main": "src/server.js",
   "scripts": {
     "dev": "node --watch src/server.js",

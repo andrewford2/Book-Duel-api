@@ -3,7 +3,7 @@
 Backend API for **Book Duel**, a literary tournament game for the SorSU Bulan Campus library.
 CS 313 Software Engineering 1, A.Y. 2026-2027.
 
-- Developer: Allyza G. magas (AllyzaMagas), BSCS 3-1
+- Developer: Mark Andrew C. Catamora (andrewford2), BSCS 3-1
 - Group and game concept: Team C3 (3-1)
 
 This is my own build of my group's game concept. Every commit in this repository was made by me, with Git, on my own computer or in my own Codespace.
@@ -20,8 +20,8 @@ This is my own build of my group's game concept. Every commit in this repository
 ## Setup
 
 ```
-git clone [repository-url]
-cd [folder-name]
+git clone https://github.com/andrewford2/Book-Duel-api.git
+cd Book-Duel-api
 npm install
 ```
 
@@ -78,14 +78,15 @@ A player completed the game when they answered all questions in the tournament (
 
 ## Tables
 
-1. hosts
-2. question_sets
-3. questions
-4. choices
-5. sessions
-6. session_players
-7. rounds
-8. answers
+1. users
+2. hosts
+3. question_sets
+4. questions
+5. choices
+6. sessions
+7. session_players
+8. rounds
+9. answers
 
 ## Database scripts
 

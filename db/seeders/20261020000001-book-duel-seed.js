@@ -30,11 +30,11 @@ module.exports = {
 
     // 2. Five player accounts.
     const playerUsers = await queryInterface.bulkInsert('users', [
-      { school_id: '20240001', full_name: 'Anna Santos', email: 'anna.santos@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
-      { school_id: '20240002', full_name: 'Ben Cruz', email: 'ben.cruz@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
-      { school_id: '20240003', full_name: 'Carla Reyes', email: 'carla.reyes@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
-      { school_id: '20240004', full_name: 'Dan Garcia', email: 'dan.garcia@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
-      { school_id: '20240005', full_name: 'Eva Lopez', email: 'eva.lopez@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
+      { school_id: '20240001', full_name: 'Player One', email: 'player1@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
+      { school_id: '20240002', full_name: 'Player Two', email: 'player2@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
+      { school_id: '20240003', full_name: 'Player Three', email: 'player3@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
+      { school_id: '20240004', full_name: 'Player Four', email: 'player4@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
+      { school_id: '20240005', full_name: 'Player Five', email: 'player5@sorsu.edu.ph', role: 'player', password_hash: passwordHash, created_at: new Date(now), updated_at: new Date(now) },
     ], { returning: ['user_id'] });
 
     const playerUserIds = playerUsers.map((p) => p.user_id);
@@ -102,11 +102,11 @@ module.exports = {
     const sessionId = session.session_id;
 
     const players = await queryInterface.bulkInsert('session_players', [
-      { session_id: sessionId, user_id: playerUserIds[0], nickname: 'Anna', hp: 4, score: 300, is_eliminated: false, is_winner: true, joined_at: new Date(now - 3550000) },
-      { session_id: sessionId, user_id: playerUserIds[1], nickname: 'Ben', hp: 3, score: 200, is_eliminated: false, is_winner: false, joined_at: new Date(now - 3540000) },
-      { session_id: sessionId, user_id: playerUserIds[2], nickname: 'Carla', hp: 4, score: 250, is_eliminated: false, is_winner: false, joined_at: new Date(now - 3530000) },
-      { session_id: sessionId, user_id: playerUserIds[3], nickname: 'Dan', hp: 0, score: 100, is_eliminated: true, is_winner: false, joined_at: new Date(now - 3520000) },
-      { session_id: sessionId, user_id: playerUserIds[4], nickname: 'Eva', hp: 5, score: 0, is_eliminated: false, is_winner: false, joined_at: new Date(now - 3510000) },
+      { session_id: sessionId, user_id: playerUserIds[0], nickname: 'Player 1', hp: 4, score: 300, is_eliminated: false, is_winner: true, joined_at: new Date(now - 3550000) },
+      { session_id: sessionId, user_id: playerUserIds[1], nickname: 'Player 2', hp: 3, score: 200, is_eliminated: false, is_winner: false, joined_at: new Date(now - 3540000) },
+      { session_id: sessionId, user_id: playerUserIds[2], nickname: 'Player 3', hp: 4, score: 250, is_eliminated: false, is_winner: false, joined_at: new Date(now - 3530000) },
+      { session_id: sessionId, user_id: playerUserIds[3], nickname: 'Player 4', hp: 0, score: 100, is_eliminated: true, is_winner: false, joined_at: new Date(now - 3520000) },
+      { session_id: sessionId, user_id: playerUserIds[4], nickname: 'Player 5', hp: 5, score: 0, is_eliminated: false, is_winner: false, joined_at: new Date(now - 3510000) },
     ], { returning: ['session_player_id'] });
 
     const questionsForSession = await queryInterface.sequelize.query(
@@ -133,9 +133,9 @@ module.exports = {
     const correctMap = {};
     correctChoices.forEach((c) => { correctMap[c.question_id] = c.choice_id; });
 
-    // Every player answers every round, except Eva who leaves after round 1.
-    // Anna, Ben, Carla and Dan answer all three questions and therefore completed
-    // the tournament; Eva did not finish it.
+    // Every player answers every round, except Player Five who leaves after round 1.
+    // Players One to Four answer all three questions and therefore completed
+    // the tournament; Player Five did not finish it.
     const answersData = [];
     const results = [
       // playerIndex, correct flags per round, damage per round, score per round
@@ -159,7 +159,7 @@ module.exports = {
       });
     });
 
-    // Eva joins but never answers: one empty answer row keeps her out of the podium.
+    // Player Five joins but never answers: one empty row keeps them out of the podium.
     answersData.push({
       round_id: rounds[0].round_id,
       session_player_id: players[4].session_player_id,

@@ -6,7 +6,7 @@ module.exports = {
   slug: 'book-duel',
   name: 'Book Duel',
   team: 'Team C3 (3-1)',
-  developer: 'AllyzaMagas',
+  developer: 'andrewford2',
   description: 'Book Duel - a literary tournament game for the SorSU Bulan Campus library',
   min_players: 2,
   max_players: 30,
